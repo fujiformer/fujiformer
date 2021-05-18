@@ -1,0 +1,12 @@
+[package]
+name = "fujiformer"
+version = "0.1.0"
+edition = "2018"
+
+[workspace]
+members = ["geom", "io"]
+
+[dependencies]
+bevy = "0.5"
+fujiformer_geom = { path = "geom" }
+fujiformer_io = { path = "io" }
