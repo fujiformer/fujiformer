@@ -1,6 +1,8 @@
 mod filler;
 mod ui;
 
+pub use self::ui::MapCamera;
+
 use std::{fs::File, io::BufReader};
 
 use bevy::prelude::*;
