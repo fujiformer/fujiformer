@@ -16,6 +16,7 @@ impl Plugin for MapUiPlugin {
 
 pub struct MapUiResources {
     pub filler_color: Handle<ColorMaterial>,
+    pub screen_color: Handle<ColorMaterial>,
 }
 
 impl FromWorld for MapUiResources {
@@ -23,6 +24,7 @@ impl FromWorld for MapUiResources {
         let mut materials = world.get_resource_mut::<Assets<ColorMaterial>>().unwrap();
         MapUiResources {
             filler_color: materials.add(Color::rgb(1.0, 1.0, 0.0).into()),
+            screen_color: materials.add(Color::rgb(0.2, 0.2, 0.2).into()),
         }
     }
 }

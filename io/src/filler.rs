@@ -47,19 +47,19 @@ pub enum FillersDecodeError {
     HeightNotInt,
 }
 
-pub fn read_fillers(map: &mut CelesteMap) -> Result<(), FillersDecodeError> {
+pub fn decode_fillers(map: &mut CelesteMap) -> Result<(), FillersDecodeError> {
     let mut node = map
         .unread
         .take_child_with_name("Filler")
         .ok_or(FillersDecodeError::MissingFillerNode)?;
 
-    for mut child in node.take_children().into_iter() {
+    for mut child in std::mem::take(node.children_mut()).into_iter() {
         if child.name() != "rect" {
             warn!("expected \"rect\", got {}", child.name());
         }
 
         let (mut x, mut y, mut width, mut height) = (None, None, None, None);
-        for (key, value) in child.take_properties() {
+        for (key, value) in std::mem::take(child.properties_mut()).into_iter() {
             match key.as_str() {
                 "x" => x = Some(i32::try_from(value).map_err(|_| FillersDecodeError::XNotInt)?),
                 "y" => y = Some(i32::try_from(value).map_err(|_| FillersDecodeError::YNotInt)?),
@@ -70,7 +70,7 @@ pub fn read_fillers(map: &mut CelesteMap) -> Result<(), FillersDecodeError> {
                     height =
                         Some(u32::try_from(value).map_err(|_| FillersDecodeError::HeightNotInt)?)
                 }
-                _ => (),
+                _ => warn!("ignoring property {} = {:?}", key, value),
             }
         }
         let (x, y, width, height) = (

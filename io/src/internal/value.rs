@@ -45,12 +45,45 @@ impl TryFrom<Value> for i32 {
     }
 }
 
+impl TryFrom<&Value> for i32 {
+    type Error = ValueConversionError;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Int(x) => Ok(*x),
+            _ => Err(ValueConversionError),
+        }
+    }
+}
+
 impl TryFrom<Value> for u32 {
     type Error = ValueConversionError;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         match value {
             Value::Int(x) => x.try_into().map_err(|_| ValueConversionError),
+            _ => Err(ValueConversionError),
+        }
+    }
+}
+
+impl TryFrom<&Value> for u32 {
+    type Error = ValueConversionError;
+
+    fn try_from(value: &Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::Int(x) => (*x).try_into().map_err(|_| ValueConversionError),
+            _ => Err(ValueConversionError),
+        }
+    }
+}
+
+impl TryFrom<Value> for String {
+    type Error = ValueConversionError;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        match value {
+            Value::String(x) => Ok(x),
             _ => Err(ValueConversionError),
         }
     }

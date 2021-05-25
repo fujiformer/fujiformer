@@ -52,16 +52,16 @@ impl Node {
         &self.properties
     }
 
-    pub fn take_properties(&mut self) -> Vec<(String, Value)> {
-        std::mem::take(&mut self.properties)
+    pub fn properties_mut(&mut self) -> &mut Vec<(String, Value)> {
+        &mut self.properties
     }
 
     pub fn children(&self) -> &[Node] {
         &self.children
     }
 
-    pub fn take_children(&mut self) -> Vec<Node> {
-        std::mem::take(&mut self.children)
+    pub fn children_mut(&mut self) -> &mut Vec<Node> {
+        &mut self.children
     }
 }
 

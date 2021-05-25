@@ -1,4 +1,5 @@
 mod filler;
+mod screen;
 mod ui;
 
 pub use self::ui::MapCamera;
@@ -14,9 +15,10 @@ pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_plugin(MapUiPlugin);
-        app.add_startup_system(load_map.system());
-        app.add_system(filler::add_on_map_load.system());
+        app.add_plugin(MapUiPlugin)
+            .add_startup_system(load_map.system())
+            .add_system(filler::add_on_map_load.system())
+            .add_system(screen::add_on_map_load.system());
     }
 }
 

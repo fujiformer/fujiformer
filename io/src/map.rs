@@ -3,8 +3,10 @@ use std::io::{BufReader, Read};
 use thiserror::Error;
 
 use crate::{
-    filler::{read_fillers, Filler, FillersDecodeError},
+    filler::{decode_fillers, Filler, FillersDecodeError},
     internal::{CelesteIo, Lookup, LookupRef, Node, NodeReadError, NonRleString, StringReadError},
+    screen::{decode_screens, ScreensDecodeError},
+    Screen,
 };
 
 #[derive(Debug)]
@@ -12,6 +14,7 @@ pub struct CelesteMap {
     name: String,
     pub(crate) unread: Node,
     fillers: Vec<Filler>,
+    screens: Vec<Screen>,
 }
 
 impl CelesteMap {
@@ -20,6 +23,7 @@ impl CelesteMap {
             name,
             unread: Node::new("Map".into()),
             fillers: Vec::new(),
+            screens: Vec::new(),
         }
     }
 
@@ -33,6 +37,14 @@ impl CelesteMap {
 
     pub fn fillers_mut(&mut self) -> &mut Vec<Filler> {
         &mut self.fillers
+    }
+
+    pub fn screens(&self) -> &[Screen] {
+        &self.screens
+    }
+
+    pub fn screens_mut(&mut self) -> &mut Vec<Screen> {
+        &mut self.screens
     }
 }
 
@@ -52,6 +64,8 @@ pub enum CelesteMapReadError {
     RootNodeError(#[from] NodeReadError),
     #[error("failed decoding fillers")]
     FillersDecodeError(#[from] FillersDecodeError),
+    #[error("failed decoding screens")]
+    ScreensDecodeError(#[from] ScreensDecodeError),
 }
 
 impl CelesteIo for CelesteMap {
@@ -85,7 +99,8 @@ impl CelesteIo for CelesteMap {
         });
 
         map.unread = Node::read(reader, Some(lookup.as_ref()))?;
-        read_fillers(&mut map)?;
+        decode_fillers(&mut map)?;
+        decode_screens(&mut map)?;
 
         Ok(map)
     }
